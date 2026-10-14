@@ -1,0 +1,44 @@
+name: Weekly digest
+description: Résume les commits d'une période en Google Doc + Google Slides illustrés (captures/GIF de l'app), via Copilot CLI.
+inputs:
+  app-url:
+    description: URL de l'app déployée à filmer
+    required: true
+  drive-folder-id:
+    description: Dossier (Shared Drive) où créer le Doc, le deck et les médias
+    required: true
+  google-sa-key:
+    description: Clé JSON du compte de service Google
+    required: true
+  copilot-token:
+    description: PAT fine-grained avec la permission "Copilot Requests"
+    required: true
+  since:
+    description: Début de période (ex "2026-06-09" ou "7 days ago")
+    default: 7 days ago
+  until:
+    description: Fin de période
+    default: now
+  app-login-steps:
+    description: JSON optionnel, étapes Playwright de connexion
+    default: '[]'
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+    - run: npm install --prefix "${{ github.action_path }}" && npx --prefix "${{ github.action_path }}" playwright install --with-deps chromium
+      shell: bash
+    - run: |
+        export PATH="${{ github.action_path }}/node_modules/.bin:$PATH"
+        node "${{ github.action_path }}/scripts/digest.mjs"
+      shell: bash
+      env:
+        SINCE: ${{ inputs.since }}
+        UNTIL: ${{ inputs.until }}
+        APP_URL: ${{ inputs.app-url }}
+        APP_LOGIN_STEPS: ${{ inputs.app-login-steps }}
+        DRIVE_FOLDER_ID: ${{ inputs.drive-folder-id }}
+        GOOGLE_SA_KEY: ${{ inputs.google-sa-key }}
+        COPILOT_GITHUB_TOKEN: ${{ inputs.copilot-token }}

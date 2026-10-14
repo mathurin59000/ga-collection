@@ -1,0 +1,10 @@
+{
+  "name": "weekly-digest-action",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@github/copilot": "latest",
+    "googleapis": "^144.0.0",
+    "playwright": "^1.49.0"
+  }
+}

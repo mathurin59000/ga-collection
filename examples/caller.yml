@@ -1,0 +1,26 @@
+# À copier dans paysages-azureens: .github/workflows/weekly-digest.yml
+name: Weekly digest
+on:
+  schedule:
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+    inputs:
+      since: { description: 'Début (ex 2026-06-09)', default: '7 days ago' }
+      until: { description: 'Fin', default: 'now' }
+permissions:
+  contents: read
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: mathurin59000/ga-collection@main # adapte owner/repo/ref
+        with:
+          app-url: https://paysages-azureens.fr
+          drive-folder-id: ${{ vars.DRIVE_FOLDER_ID }}
+          google-sa-key: ${{ secrets.GOOGLE_SA_KEY }}
+          copilot-token: ${{ secrets.COPILOT_GITHUB_TOKEN }}
+          since: ${{ inputs.since || '7 days ago' }}
+          until: ${{ inputs.until || 'now' }}
