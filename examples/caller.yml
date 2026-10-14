@@ -20,7 +20,9 @@ jobs:
         with:
           app-url: https://paysages-azureens.fr
           drive-folder-id: ${{ vars.DRIVE_FOLDER_ID }}
-          google-sa-key: ${{ secrets.GOOGLE_SA_KEY }}
+          google-client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
+          google-client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          google-refresh-token: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
           copilot-token: ${{ secrets.COPILOT_GITHUB_TOKEN }}
           since: ${{ inputs.since || '7 days ago' }}
           until: ${{ inputs.until || 'now' }}

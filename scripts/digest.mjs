@@ -3,7 +3,7 @@ import { appendFileSync, createReadStream, mkdirSync } from 'node:fs';
 import { chromium } from 'playwright';
 import { google } from 'googleapis';
 
-const { SINCE, UNTIL, APP_URL, APP_LOGIN_STEPS, DRIVE_FOLDER_ID, GOOGLE_SA_KEY } = process.env;
+const { SINCE, UNTIL, APP_URL, APP_LOGIN_STEPS, DRIVE_FOLDER_ID, GOOGLE_SA_KEY, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN } = process.env;
 const run = (cmd, args) => execFileSync(cmd, args, { encoding: 'utf8', maxBuffer: 1 << 28 });
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const day = (d) => new Date(run('date', ['-d', d, '+%F'])).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }); // GNU date (runner Linux)
@@ -70,10 +70,14 @@ for (const [i, it] of digest.items.entries()) {
 await browser.close();
 
 // 4. Google Drive / Docs / Slides
-const auth = new google.auth.GoogleAuth({
-  credentials: JSON.parse(GOOGLE_SA_KEY),
-  scopes: ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/presentations'],
-});
+const scopes = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/presentations'];
+let auth;
+if (GOOGLE_REFRESH_TOKEN) { // OAuth: les fichiers appartiennent à ton compte (Gmail perso OK)
+  auth = new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
+  auth.setCredentials({ refresh_token: GOOGLE_REFRESH_TOKEN });
+} else { // compte de service: exige un Shared Drive (pas de quota de stockage)
+  auth = new google.auth.GoogleAuth({ credentials: JSON.parse(GOOGLE_SA_KEY), scopes });
+}
 const drive = google.drive({ version: 'v3', auth });
 const slides = google.slides({ version: 'v1', auth });
 const shared = { supportsAllDrives: true };

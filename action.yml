@@ -7,9 +7,17 @@ inputs:
   drive-folder-id:
     description: Dossier (Shared Drive) où créer le Doc, le deck et les médias
     required: true
+  google-client-id:
+    description: Client OAuth Google (avec google-client-secret et google-refresh-token)
+    default: ''
+  google-client-secret:
+    default: ''
+  google-refresh-token:
+    description: Obtenu avec scripts/get-refresh-token.mjs
+    default: ''
   google-sa-key:
-    description: Clé JSON du compte de service Google
-    required: true
+    description: Alternative OAuth, clé JSON de compte de service (Shared Drive obligatoire)
+    default: ''
   copilot-token:
     description: PAT fine-grained avec la permission "Copilot Requests"
     required: true
@@ -41,4 +49,7 @@ runs:
         APP_LOGIN_STEPS: ${{ inputs.app-login-steps }}
         DRIVE_FOLDER_ID: ${{ inputs.drive-folder-id }}
         GOOGLE_SA_KEY: ${{ inputs.google-sa-key }}
+        GOOGLE_CLIENT_ID: ${{ inputs.google-client-id }}
+        GOOGLE_CLIENT_SECRET: ${{ inputs.google-client-secret }}
+        GOOGLE_REFRESH_TOKEN: ${{ inputs.google-refresh-token }}
         COPILOT_GITHUB_TOKEN: ${{ inputs.copilot-token }}
