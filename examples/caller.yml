@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
-      - uses: mathurin59000/ga-colletion@main
+      - uses: mathurin59000/ga-collection@main
         with:
           app-url: https://paysages-azureens.fr
           drive-folder-id: ${{ vars.DRIVE_FOLDER_ID }}
