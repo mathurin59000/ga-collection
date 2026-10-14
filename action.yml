@@ -28,7 +28,7 @@ runs:
     - uses: actions/setup-node@v4
       with:
         node-version: 22
-    - run: npm install --prefix "${{ github.action_path }}" && npx --prefix "${{ github.action_path }}" playwright install --with-deps chromium
+    - run: npm install --prefix "${{ github.action_path }}" && npx --prefix "${{ github.action_path }}" playwright install --with-deps chromium && sudo apt-get install -y -qq ffmpeg
       shell: bash
     - run: |
         export PATH="${{ github.action_path }}/node_modules/.bin:$PATH"
